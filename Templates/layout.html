@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <title>نتائج الباكلوريا في موريتانيا</title>
+    <link rel="stylesheet" href="{{url_for('static' , filename = 'css/style.css')}}">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <nav>
+        {% block navbar %} 
+        {% endblock %} 
+    </nav>
+    <main>
+    {% block body %}
+    {% include 'index.html' %}
+    {% endblock %}
+    </main>
+    <script>
+        // Function to submit the form when an option is selected
+        function submitForm() {
+            const selectElement = document.getElementById('serie_bac');
+            const selectedBacType = selectElement.value;
+            filterResultsByBacType(selectedBacType);
+
+            // Programmatically submit the form
+            const form = document.querySelector('form');
+            form.submit();
+        }
+
+        // JavaScript code to set the selected option based on the value from Flask
+        const bacTypeValue = "{{s}}"; // Replace with the value retrieved from Flask
+      
+        const bacTypeFilter = document.getElementById('serie_bac');
+        for (const option of bacTypeFilter.options) {
+            if (option.value === bacTypeValue) {
+            option.selected = true;
+            break;
+            }
+        }
+      </script>
+</body>
+</html>

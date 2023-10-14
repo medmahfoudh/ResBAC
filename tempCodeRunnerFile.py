@@ -1,0 +1,1 @@
+collection.update_many({}, {"$unset": {"rank_Wilaya": ""}})

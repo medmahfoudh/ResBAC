@@ -1,0 +1,375 @@
+{% extends 'layout.html' %}
+{% block navbar %} 
+        <nav class="navbar p-3 bg-slate-200 ">
+            <a href="/">موريباك الغلابة</a>
+        </nav>
+        {% endblock %} 
+{% block body %}
+<div class="t">
+    <p><b> نتائج الباكلوريا 2023 </b></p>
+</div>
+<div class="res">
+    <!-- <h1>أدخل رقم المترشح للحصول على النتيجة    </h1> -->
+    <form action="{{ url_for('res') }}" method="post">
+      <label class="relative block">
+        <span class="sr-only">Search</span>
+        <span class="absolute inset-y-0 left-0 flex items-center pl-2">
+          <svg class="h-5 w-5 fill-slate-300" viewBox="0 0 20 20"><!-- ... --></svg>
+        </span>
+        <input class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pl-9 pr-3 px-10 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" placeholder="  أدخل رقم المترشح لعرض النتيجة..." type="number" name="num_bac" id="num_bac" required/>
+      </label>
+        <button class="rounded-md text-white bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none p-0 px-1 py-0 focus:ring focus:ring-violet-300 " type="submit">بحث</button>
+    </form>
+</div>
+
+
+{% if etudiant  %}
+    <div class="resultats">
+        {% if etudiant.SERIE == 'SN' %}
+        <h4 class="m-2"><span class="sn span-serie"> {{etudiant.NODOSS}} | شعبة العلوم الطبيعية (SN)</span> </h4>
+        {% elif etudiant.SERIE == 'M' %}
+        <h4 class="m-2"><span class="m span-serie"> {{etudiant.NODOSS}} | شعبة الرياضيات (M)</span> </h4>
+        {% elif etudiant.SERIE == 'LO' %}
+        <h4 class="m-2"><span class="lo span-serie"> {{etudiant.NODOSS}} | شعبة الاَداب الأصلية (LO)</span> </h4>
+        {% elif etudiant.SERIE == 'LM' %}
+        <h4 class="m-2"><span class="lm span-serie"> {{etudiant.NODOSS}} | شعبة الاَداب العصرية (LM)</span> </h4>
+        {% elif etudiant.SERIE == 'LA' %}
+        <h4 class="m-2"><span class="la span-serie"> {{etudiant.NODOSS}} | شعبة اللغات (LA)</span> </h4>
+        {% elif etudiant.SERIE == 'TM' %}
+        <h4 class="m-2"><span class="tm span-serie"> {{etudiant.NODOSS}} | شعبة التقنية (TM)</span> </h4>
+        {% elif etudiant.SERIE == 'TS' %}
+        <h4 class="m-2"><span class="ts span-serie"> {{etudiant.NODOSS}} | شعبة الهندسة الكهربائية (TS)</span> </h4>
+        {% endif %}
+        <h1>{{etudiant.NOMPA}}</h1>
+        {% if etudiant.Decision == "Admis " %}
+        <div class="sec">
+          <h4>القرار</h4>
+        <h1 class="text-green-600">ناجح</h1>
+        </div>
+        {% elif etudiant.Decision == "Sessionnaire" %}
+        <div class="sec">
+          <h4>القرار</h4>
+        <h1 class="text-yellow-400">الدورة التكميلية</h1>
+        </div>
+        {% elif etudiant.Decision == "Ajourné" %}
+        <div class="sec">
+          <h4>القرار</h4>
+        <h1 class="text-red-600">غير ناجح </h1>
+        </div>
+        {% elif etudiant.Decision == "Abscent" %}
+        <div class="sec">
+          <h4>القرار</h4>
+          <h1 class="text-[#27374D]">غائب </h1>
+        </div>
+        {% elif etudiant.Decision == "Examen annulé" %}
+        <div class="sec">
+          <h4>القرار</h4>
+        <h1 class="text-red-600">إمتحان ملغي </h1>
+        </div>
+        {% endif %}
+        <div class="display-details">
+          <div class="column">
+            <h4>المعدل</h4>
+            <h1>{{etudiant.rounded_moy}}</h1>
+          </div>
+          <div class="column">
+            {% if etudiant.rank_N  %}
+            <h4>الترتيب وطنيا</h4>
+            <h1> {{ etudiant.rank_N }}</h1>
+            {% else %}
+            <h4>الولاية</h4>
+            <h1> {{ etudiant.WILAYA_AR}}</h1>
+            {% endif %}
+          </div>
+          <div class="display-details">
+            <div class="column">
+              <h4>المدرسة</h4>
+              <h1>{{etudiant.LibnoetsAR}}</h1>
+            </div>
+            <div class="column">
+              {% if etudiant.rank_N  %}
+              <h4>الترتيب حسب الولاية</h4>
+              <h1> {{ etudiant.rank_Wilaya }}</h1>
+              {% else %}
+              <h4>نتائج المواد</h4>
+              <a href="http://dec.education.gov.mr/bac-21/{{etudiant.NODOSS}}/info" class="text-blue-600"" target="_blank"> إضغط هنا</a>
+              {% endif %}
+            </div>
+          </div>
+          <div class="display-details">
+
+            <div class="column">
+              {% if etudiant.rank_N  %}
+              <h4>نتائج المواد</h4>
+              <a href="http://dec.education.gov.mr/bac-21/{{etudiant.NODOSS}}/info" class="text-blue-600" target="_blank"> إضغط هنا</a>
+              {% endif %}
+            </div>
+          </div>
+    </div>
+{% elif erreur %}
+    <h1>تحقق من الرقم الذي قمت بإدخاله</h1>
+
+{% elif filter_serie %}
+  <div class=" bg-slate-100 list">
+    <table class="table-fixed border-collapse border border-slate-400 w-auto">
+      <thead>
+          <tr>
+            <th class="border border-slate-300">  الترتيب  </th>
+            <th class="border border-slate-300">الشعبة</th>
+            <th class="border border-slate-300">الإسم</th>
+            <th class="border border-slate-300">المعدل</th>
+            <th class="border border-slate-300">المدرسة</th>
+            <th class="border border-slate-300">الولاية</th>
+          </tr>
+        </thead>
+      <tbody>
+        <div class="filter">
+          {% if c == 'm'%}
+          <p class="serie">أوائل الناجحين مع المتأهلين للدورة التكميلية من شعبة  <span class="{{c}} span-serie">الرياضيات </span>  </p>
+          {% elif c == 'sn' %}
+          <p class="serie">أوائل الناجحين مع المتأهلين للدورة التكميلية من شعبة  <span class="{{c}} span-serie">العلوم الطبيعية  </span>  </p>
+          {% elif c == 'lm' %}
+          <p class="serie">أوائل الناجحين مع المتأهلين للدورة التكميلية من شعبة  <span class="{{c}} span-serie"> الاَداب العصرية</span>  </p>
+          {% elif c == 'lo' %}
+          <p class="serie">أوائل الناجحين مع المتأهلين للدورة التكميلية من شعبة  <span class="{{c}} span-serie">الاَداب الأصلية </span>  </p>
+          {% elif c == 'la' %}
+          <p class="serie">أوائل الناجحين مع المتأهلين للدورة التكميلية من شعبة  <span class="{{c}} span-serie">اللغات </span>  </p>
+          {% elif c == 'tm' %}
+          <p class="serie">أوائل الناجحين مع المتأهلين للدورة التكميلية من شعبة  <span class="{{c}} span-serie">التقنية </span>  </p>
+          {% elif c == 'ts' %}
+          <p class="serie">أوائل الناجحين مع المتأهلين للدورة التكميلية من شعبة  <span class="{{c}} span-serie">الهندسة الكهربائية </span>  </p>
+          {% endif %}
+            <form class="option-serie" action="{{ url_for('filter_bac') }}" method="post" >
+              <select name="serie_bac" id="serie_bac" onchange="this.form.submit()">
+                <option value="all_serie" >جميع الشعب</option>
+                <option value="M" >الرياضيات</option>
+                <option value="SN" >العلوم الطبيعية </option>
+                <option value="LM" >الاَداب العصرية </option>
+                <option value="LO" >الاَداب الأصلية </option>
+                <option value="LA" >اللغات</option>
+                <option value="TM" >التقنية</option>
+                <option value="TS" >الهندسة الكهربائية </option>
+              </select>
+            </form>
+
+        </div>
+        {% for etudiant in filter_serie %}
+        <tr>
+          <td class="border border-slate-300">{{ etudiant.rank_N }}</td>
+          <td class="border border-slate-300"><span class="{{c}} span-serie"><b>{{ etudiant.SERIE }}</b></span></td>
+          <td class="border border-slate-300"><a class="text-blue-600" href="{{url_for('resbac' , numero = etudiant.NODOSS)}}"><b>{{ etudiant.NOMPA }}</b></a></td>
+          <td class="border border-slate-300">{{ etudiant.rounded_moy }}</td>
+          <td class="border border-slate-300">{{ etudiant.LibnoetsAR }}</td>
+          <td class="border border-slate-300">{{ etudiant.WILAYA_AR }} </td> 
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+<div class=" bg-slate-100 list">
+  <table class="table-fixed border-collapse border border-slate-400 w-auto">
+      <thead>
+          <tr>
+            <th class="border border-slate-300">  الترتيب  </th>
+            <th class="border border-slate-300">الشعبة</th>
+            <th class="border border-slate-300">الإسم</th>
+            <th class="border border-slate-300">المعدل</th>
+            <th class="border border-slate-300">المدرسة</th>
+            <th class="border border-slate-300">الولاية</th>
+          </tr>
+        </thead>
+      <tbody>
+        <div class="filter">
+          <p class="serie">الخمسة الأوائل من شعبة  <span class="m span-serie">الرياضيات </span>  </p>
+
+          <form class="option-serie" action="{{ url_for('filter_bac') }}" method="post" >
+            <select name="serie_bac" id="serie_bac" onchange="this.form.submit()">
+              <option value="all_serie" >جميع الشعب</option>
+              <option value="M" >الرياضيات</option>
+              <option value="SN" >العلوم الطبيعية </option>
+              <option value="LM" >الاَداب العصرية </option>
+              <option value="LO" >الاَداب الأصلية </option>
+              <option value="LA" >اللغات</option>
+              <option value="TM" >التقنية</option>
+              <option value="TS" >الهندسة الكهربائية </option>
+            </select>
+          </form>
+
+        </div>
+          {% for etudiant in m %}
+        <tr>
+          <td class="border border-slate-300">{{ etudiant.rank_N }}</td>
+          <td class="border border-slate-300"><span class="m span-serie"><b>{{ etudiant.SERIE }}</b></span></td>
+          <td class="border border-slate-300"><a class="text-blue-600" href="{{url_for('resbac' , numero = etudiant.NODOSS)}}"><b>{{ etudiant.NOMPA }}</b></a></td>
+          <td class="border border-slate-300">{{ etudiant.rounded_moy }}</td>
+          <td class="border border-slate-300">{{ etudiant.LibnoetsAR }}</td>
+          <td class="border border-slate-300">{{ etudiant.WILAYA_AR }}</td> 
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="border border-slate-300">  الترتيب  </th>
+          <th class="border border-slate-300">الشعبة</th>
+          <th class="border border-slate-300">الإسم</th>
+          <th class="border border-slate-300">المعدل</th>
+          <th class="border border-slate-300">المدرسة</th>
+          <th class="border border-slate-300">الولاية</th>
+        </tr>
+      </thead>
+      <tbody>
+        <p class="serie">الخمسة الأوائل من شعبة  <span class="sn span-serie">العلوم الطبيعية</span>  </p>
+        {% for etudiant in sn %}
+      <tr>
+        <td class="border border-slate-300">{{ etudiant.rank_N }}</td>
+        <td class="border border-slate-300"><span class="sn span-serie"><b>{{ etudiant.SERIE }}</b></span></td>
+        <td class="border border-slate-300"><a class="text-blue-600" href="{{url_for('resbac' , numero = etudiant.NODOSS)}}"><b>{{ etudiant.NOMPA }}</b></a></td>
+        <td class="border border-slate-300">{{ etudiant.rounded_moy }}</td>
+        <td class="border border-slate-300">{{ etudiant.LibnoetsAR }}</td>
+        <td class="border border-slate-300">{{ etudiant.WILAYA_AR }}</td>
+      </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="border border-slate-300">  الترتيب  </th>
+          <th class="border border-slate-300">الشعبة</th>
+          <th class="border border-slate-300">الإسم</th>
+          <th class="border border-slate-300">المعدل</th>
+          <th class="border border-slate-300">المدرسة</th>
+          <th class="border border-slate-300">الولاية</th>
+        </tr>
+      </thead>
+      <tbody>
+        <p class="serie">الخمسة الأوائل من شعبة  <span class="lm span-serie">الاَداب العصرية</span>  </p>
+        {% for etudiant in lm %}
+      <tr>
+        <td class="border border-slate-300">{{ etudiant.rank_N }}</td>
+        <td class="border border-slate-300"><span class="lm span-serie"><b>{{ etudiant.SERIE }}</b></span></td>
+        <td class="border border-slate-300"><a class="text-blue-600" href="{{url_for('resbac' , numero = etudiant.NODOSS)}}"><b>{{ etudiant.NOMPA }}</b></a></td>
+        <td class="border border-slate-300">{{ etudiant.rounded_moy }}</td>
+        <td class="border border-slate-300">{{ etudiant.LibnoetsAR }}</td>
+        <td class="border border-slate-300">{{ etudiant.WILAYA_AR }}</td>
+      </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="border border-slate-300">  الترتيب  </th>
+          <th class="border border-slate-300">الشعبة</th>
+          <th class="border border-slate-300">الإسم</th>
+          <th class="border border-slate-300">المعدل</th>
+          <th class="border border-slate-300">المدرسة</th>
+          <th class="border border-slate-300">الولاية</th>
+        </tr>
+      </thead>
+      <tbody>
+        <p class="serie">الخمسة الأوائل من شعبة  <span class="lo span-serie">الاَداب الأصلية</span>  </p>
+        {% for etudiant in lo %}
+      <tr>
+        <td class="border border-slate-300">{{ etudiant.rank_N }}</td>
+        <td class="border border-slate-300"><span class="lo span-serie"><b>{{ etudiant.SERIE }}</b></span></td>
+        <td class="border border-slate-300"><a class="text-blue-600" href="{{url_for('resbac' , numero = etudiant.NODOSS)}}"><b>{{ etudiant.NOMPA }}</b></a></td>
+        <td class="border border-slate-300">{{ etudiant.rounded_moy }}</td>
+        <td class="border border-slate-300">{{ etudiant.LibnoetsAR }}</td>
+        <td class="border border-slate-300">{{ etudiant.WILAYA_AR }}</td>
+      </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="border border-slate-300">  الترتيب  </th>
+          <th class="border border-slate-300">الشعبة</th>
+          <th class="border border-slate-300">الإسم</th>
+          <th class="border border-slate-300">المعدل</th>
+          <th class="border border-slate-300">المدرسة</th>
+          <th class="border border-slate-300">الولاية</th>
+        </tr>
+      </thead>
+      <tbody>
+        <p class="serie">الخمسة الأوائل من شعبة  <span class="tm span-serie">التقنية </span>  </p>
+        {% for etudiant in tm %}
+      <tr>
+        <td class="border border-slate-300">{{ etudiant.rank_N }}</td>
+        <td class="border border-slate-300"><span class="tm span-serie"><b>{{ etudiant.SERIE }}</b></span></td>
+        <td class="border border-slate-300"><a class="text-blue-600" href="{{url_for('resbac' , numero = etudiant.NODOSS)}}"><b>{{ etudiant.NOMPA }}</b></a></td>
+        <td class="border border-slate-300">{{ etudiant.rounded_moy }}</td>
+        <td class="border border-slate-300">{{ etudiant.LibnoetsAR }}</td>
+        <td class="border border-slate-300">{{ etudiant.WILAYA_AR }}</td>
+      </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="border border-slate-300">  الترتيب  </th>
+          <th class="border border-slate-300">الشعبة</th>
+          <th class="border border-slate-300">الإسم</th>
+          <th class="border border-slate-300">المعدل</th>
+          <th class="border border-slate-300">المدرسة</th>
+          <th class="border border-slate-300">الولاية</th>
+        </tr>
+      </thead>
+      <tbody>
+        <p class="serie">الخمسة الأوائل من شعبة  <span class="la span-serie"> اللغات</span>  </p>
+        {% for etudiant in la %}
+      <tr>
+        <td class="border border-slate-300">{{ etudiant.rank_N }}</td>
+        <td class="border border-slate-300"><span class="la span-serie"><b>{{ etudiant.SERIE }}</b></span></td>
+        <td class="border border-slate-300"><a class="text-blue-600" href="{{url_for('resbac' , numero = etudiant.NODOSS)}}"><b>{{ etudiant.NOMPA }}</b></a></td>
+        <td class="border border-slate-300">{{ etudiant.rounded_moy }}</td>
+        <td class="border border-slate-300">{{ etudiant.LibnoetsAR }}</td>
+        <td class="border border-slate-300">{{ etudiant.WILAYA_AR }}</td>
+      </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="border border-slate-300">  الترتيب  </th>
+          <th class="border border-slate-300">الشعبة</th>
+          <th class="border border-slate-300">الإسم</th>
+          <th class="border border-slate-300">المعدل</th>
+          <th class="border border-slate-300">المدرسة</th>
+          <th class="border border-slate-300">الولاية</th>
+        </tr>
+      </thead>
+      <tbody>
+        <p class="serie">الخمسة الأوائل من شعبة  <span class="ts span-serie">الهندسة الكهربائية</span>  </p>
+        {% for etudiant in ts %}
+      <tr>
+        <td class="border border-slate-300">{{ etudiant.rank_N }}</td>
+        <td class="border border-slate-300"><span class="ts span-serie"><b>{{ etudiant.SERIE }}</b></span></td>
+        <td class="border border-slate-300"><a class="text-blue-600" href="{{url_for('resbac' , numero = etudiant.NODOSS)}}"><b>{{ etudiant.NOMPA }}</b></a></td>
+        <td class="border border-slate-300">{{ etudiant.rounded_moy }}</td>
+        <td class="border border-slate-300">{{ etudiant.LibnoetsAR }}</td>
+        <td class="border border-slate-300">{{ etudiant.WILAYA_AR }}</td>
+      </tr>
+      {% endfor %}
+
+      </tbody>
+    </table>
+      
+</div>
+{% endif %}
+
+    
+{% endblock %}
+

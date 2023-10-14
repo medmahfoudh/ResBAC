@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+{% block body %}
+<h1> رقم المترشح:{{num}} </h1>
+<table border="1">
+    <tr>
+        <th>
+            الإسم
+        </th>
+        <td> {{ nom }} </td>
+    </tr>
+    <tr>
+        <th>
+            المعدل
+        </th>
+        <td> {{ moyenne }} </td>
+    </tr>
+    <tr>
+        <th>
+            القرار
+        </th>
+        <td> {{ decision }} </td>
+    </tr>
+
+</table>
+{% endblock %}
+
+
